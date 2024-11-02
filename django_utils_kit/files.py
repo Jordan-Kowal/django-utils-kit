@@ -1,6 +1,7 @@
 """Utilities for handling files within Django."""
 
 from io import BytesIO
+from typing import List
 from urllib.parse import urlparse
 import zipfile
 
@@ -17,7 +18,7 @@ def download_file(path: str, storage: Storage) -> StreamingHttpResponse:
 
 
 def download_files_as_zip(
-    paths: str, output_filename: str, storage: Storage
+    paths: List[str], output_filename: str, storage: Storage
 ) -> HttpResponse:
     """Downloads a zip-file from a storage backend."""
     content = BytesIO()

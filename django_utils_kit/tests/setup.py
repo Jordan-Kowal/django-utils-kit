@@ -1,14 +1,19 @@
+from io import BytesIO
 import os
 import unittest
 
 import django
 from django.conf import settings
+from django.core.files.storage import Storage
 from django.core.management import call_command
+from django.http import HttpResponse, StreamingHttpResponse
 from django.urls import path
+from django.views import View
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from django_utils_kit.exceptions import Conflict, FailedPrecondition
+from django_utils_kit.files import download_file, download_files_as_zip
 
 # --------------------------------------------------
 # Settings
@@ -27,6 +32,19 @@ settings.configure(
     DEFAULT_AUTO_FIELD="django.db.models.AutoField",
 )
 
+
+# --------------------------------------------------
+# Storage
+# --------------------------------------------------
+class MockStorage(Storage):
+    def open(self, path: str, mode: str = "rb") -> BytesIO:
+        content = f"Example file content {path}"
+        return BytesIO(content.encode())
+
+    def exists(self, name: str) -> bool:
+        return True
+
+
 # --------------------------------------------------
 # Routes
 # --------------------------------------------------
@@ -44,6 +62,18 @@ class FailedPreconditionExampleView(APIView):
         raise FailedPrecondition()
 
 
+class DownloadFileView(View):
+    def get(self, request: Request) -> StreamingHttpResponse:
+        return download_file("path/to/file.txt", MockStorage())
+
+
+class DownloadZipFileView(View):
+    def get(self, request: Request) -> HttpResponse:
+        return download_files_as_zip(
+            ["path/to/file1.txt", "path/to/file2.txt"], "output.zip", MockStorage()
+        )
+
+
 urlpatterns = [
     path("conflict-example/", ConflictExampleView.as_view(), name="conflict-example"),
     path(
@@ -51,6 +81,8 @@ urlpatterns = [
         FailedPreconditionExampleView.as_view(),
         name="failed-precondition-example",
     ),
+    path("download-file/", DownloadFileView.as_view(), name="download-file"),
+    path("download-zip/", DownloadZipFileView.as_view(), name="download-file"),
 ]
 
 # --------------------------------------------------
