@@ -15,18 +15,10 @@ uv sync
 
 ### Tests
 
-You can run tests using either `unittest` or `coverage`.
-
-With `unittest`:
+You can run tests using `coverage` with our custom setup script:
 
 ```shell
-python -m unittest discover .
-```
-
-With `coverage`:
-
-```shell
-coverage run -m unittest discover .
+coverage run django_utils_kit/tests/setup.py
 coverage report --fail-under=90
 coverage html
 ```

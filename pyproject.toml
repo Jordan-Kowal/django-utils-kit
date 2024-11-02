@@ -3,7 +3,11 @@ name = "django_utils_kit"
 version = "1.0.0"
 requires-python = ">=3.9"
 description = "Bundle of useful classes and functions for Django"
-dependencies = ["django>=4.0.0", "djangorestframework>=3.13.0"]
+dependencies = [
+    "django>=4.0.0",
+    "djangorestframework>=3.13.0",
+    "pillow>=11.0.0",
+]
 readme = "README.md"
 authors = [{ name = "Jordan Kowal", email = "kowaljordan@gmail.com" }]
 maintainers = [{ name = "Jordan Kowal", email = "kowaljordan@gmail.com" }]
@@ -85,7 +89,8 @@ force-sort-within-sections = true
 # COVERAGE
 # ------------------------------
 [tool.coverage.run]
-omit = ["*/__init__.py", "*/tests/*"]
+# include = ["django_utils_kit/tests/*"]
+omit = ["*/__init__.py", "*/tests/*", "*/setup.py"]
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]

@@ -67,4 +67,4 @@ jobs:
       - name: Run mypy
         run: |
           . .venv/bin/activate
-          python -m unittest discover .
+          python -m unittest discover django_utils_kit/tests

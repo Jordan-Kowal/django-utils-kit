@@ -18,7 +18,7 @@ mypy .
 # Run tests
 echo ""
 echo ">>> [3/3] Running tests"
-coverage run -m unittest discover .
+coverage run django_utils_kit/tests/setup.py
 coverage report --fail-under=90
 
 echo "------------------------------------------"
