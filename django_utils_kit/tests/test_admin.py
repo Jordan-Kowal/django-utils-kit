@@ -2,7 +2,7 @@ from django_utils_kit.admin import ReadOnlyAdminMixin
 from django_utils_kit.test_utils import ImprovedTestCase
 
 
-class AdminTestCase(ImprovedTestCase):
+class ReadOnlyAdminMixinTestCase(ImprovedTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()

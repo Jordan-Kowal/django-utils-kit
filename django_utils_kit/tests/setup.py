@@ -30,6 +30,17 @@ settings.configure(
     ROOT_URLCONF=__name__,
     DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}},
     DEFAULT_AUTO_FIELD="django.db.models.AutoField",
+    REST_FRAMEWORK={
+        "DEFAULT_AUTHENTICATION_CLASSES": [
+            "rest_framework.authentication.TokenAuthentication",
+            "rest_framework.authentication.BasicAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+        ],
+        "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+        "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+        "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
+        "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    },
 )
 
 
@@ -50,6 +61,8 @@ class MockStorage(Storage):
 # --------------------------------------------------
 # Must be imported after settings.configure
 from rest_framework.views import APIView  # noqa
+from rest_framework.viewsets import GenericViewSet  # noqa
+from django_utils_kit.permissions import BlockAll, IsNotAuthenticated  # noqa
 
 
 class ConflictExampleView(APIView):
@@ -74,6 +87,20 @@ class DownloadZipFileView(View):
         )
 
 
+class BlockAllViewSet(GenericViewSet):
+    permission_classes = [BlockAll]
+
+    def list(self, request: Request) -> Response:
+        return Response()
+
+
+class IsNotAuthenticatedViewSet(GenericViewSet):
+    permission_classes = [IsNotAuthenticated]
+
+    def list(self, request: Request) -> Response:
+        return Response(data={"is_authenticated": False})
+
+
 urlpatterns = [
     path("conflict-example/", ConflictExampleView.as_view(), name="conflict-example"),
     path(
@@ -83,6 +110,12 @@ urlpatterns = [
     ),
     path("download-file/", DownloadFileView.as_view(), name="download-file"),
     path("download-zip/", DownloadZipFileView.as_view(), name="download-file"),
+    path("block-all/", BlockAllViewSet.as_view({"get": "list"}), name="block-all"),
+    path(
+        "is-not-authenticated/",
+        IsNotAuthenticatedViewSet.as_view({"get": "list"}),
+        name="is-not-authenticated",
+    ),
 ]
 
 # --------------------------------------------------

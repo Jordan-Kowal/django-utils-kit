@@ -89,8 +89,7 @@ force-sort-within-sections = true
 # COVERAGE
 # ------------------------------
 [tool.coverage.run]
-# include = ["django_utils_kit/tests/*"]
-omit = ["*/__init__.py", "*/tests/*", "*/setup.py"]
+omit = ["*/__init__.py", "*/tests/*", "*/test_runner.py", "*/test_utils.py"]
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
