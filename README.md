@@ -1,2 +1,3 @@
-# django-utils-kit
-A bundle of useful classes and functions for Django
+# ✨ Django Utils Kit ✨
+
+Bundle of useful classes and functions for Django
