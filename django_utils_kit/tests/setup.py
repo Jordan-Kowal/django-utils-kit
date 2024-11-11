@@ -18,7 +18,11 @@ from django_utils_kit.files import download_file, download_files_as_zip
 # --------------------------------------------------
 # Settings
 # --------------------------------------------------
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 settings.configure(
+    # Security
+    SECRET_KEY="secret",
+    # Apps
     INSTALLED_APPS=[
         "django.contrib.admin",
         "django.contrib.auth",
@@ -26,10 +30,11 @@ settings.configure(
         "django.contrib.contenttypes",
         "rest_framework",
     ],
-    SECRET_KEY="secret",
-    ROOT_URLCONF=__name__,
+    # Database
     DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}},
     DEFAULT_AUTO_FIELD="django.db.models.AutoField",
+    # DRF
+    ROOT_URLCONF=__name__,
     REST_FRAMEWORK={
         "DEFAULT_AUTHENTICATION_CLASSES": [
             "rest_framework.authentication.TokenAuthentication",
@@ -41,6 +46,18 @@ settings.configure(
         "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
         "TEST_REQUEST_DEFAULT_FORMAT": "json",
     },
+    # Emails
+    TEMPLATES=[
+        {
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [
+                os.path.join(CURRENT_DIR, "templates"),
+            ],
+            "APP_DIRS": True,
+        },
+    ],
+    DEFAULT_FROM_EMAIL="test@localhost.com",
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
 )
 
 

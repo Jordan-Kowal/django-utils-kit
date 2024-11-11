@@ -53,11 +53,12 @@ class Email:
         cc: Optional[List[str]] = None,
         bcc: Optional[List[str]] = None,
         from_email: Optional[str] = None,
-    ) -> None:
+    ) -> Thread:
         thread = Thread(
             target=self.send, args=(context, subject, to, cc, bcc, from_email)
         )
         thread.start()
+        return thread
 
     @staticmethod
     def _render_template(template_path: str, context: Dict) -> str:
