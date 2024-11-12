@@ -67,4 +67,4 @@ jobs:
       - name: Run tests
         run: |
           . .venv/bin/activate
-          python -m unittest django_utils_kit/tests/setup.py
+          python django_utils_kit/tests/setup.py
