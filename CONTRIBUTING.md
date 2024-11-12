@@ -15,7 +15,15 @@ uv sync
 
 ### Tests
 
-You can run tests using `coverage` with our custom setup script:
+You can run tests using `unittest` or `coverage` with our custom setup script:
+
+With `unittest`:
+
+```shell
+python -m unittest django_utils_kit/tests/setup.py
+```
+
+With `coverage`:
 
 ```shell
 coverage run django_utils_kit/tests/setup.py
