@@ -183,8 +183,8 @@ call_command("migrate")
 # Trigger tests
 # --------------------------------------------------
 current_dir = os.path.dirname(os.path.abspath(__file__))
-results = unittest.TextTestRunner().run(
-    unittest.defaultTestLoader.discover(current_dir)
-)
+test_runner = unittest.TextTestRunner()
+results = test_runner.run(unittest.defaultTestLoader.discover(current_dir))
+
 if results.errors or results.failures:
     raise Exception("Tests failed. See errors above.")
