@@ -35,6 +35,8 @@ settings.configure(
     # Database
     DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}},
     DEFAULT_AUTO_FIELD="django.db.models.AutoField",
+    # Images
+    MAX_THUMBNAIL_SIZE=100,
     # DRF
     ROOT_URLCONF=__name__,
     REST_FRAMEWORK={

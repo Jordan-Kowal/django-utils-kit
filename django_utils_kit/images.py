@@ -7,8 +7,6 @@ from typing import Optional, Tuple
 
 from django.core.files import File
 from django.db.models import ImageField
-
-# Third-party
 from PIL import Image
 
 IMAGE_TYPES = {
