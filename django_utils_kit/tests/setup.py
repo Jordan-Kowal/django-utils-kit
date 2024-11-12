@@ -9,8 +9,10 @@ from django.core.management import call_command
 from django.http import HttpResponse, StreamingHttpResponse
 from django.urls import path
 from django.views import View
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import IntegerField, Serializer
 
 from django_utils_kit.exceptions import Conflict, FailedPrecondition
 from django_utils_kit.files import download_file, download_files_as_zip
@@ -60,6 +62,12 @@ settings.configure(
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
 )
 
+# Must be imported after settings.configure
+from rest_framework.views import APIView  # noqa
+from rest_framework.viewsets import GenericViewSet  # noqa
+from django_utils_kit.permissions import BlockAll, IsNotAuthenticated  # noqa
+from django_utils_kit.viewsets import ImprovedViewSet  # noqa
+
 
 # --------------------------------------------------
 # Storage
@@ -74,14 +82,15 @@ class MockStorage(Storage):
 
 
 # --------------------------------------------------
+# Serializers
+# --------------------------------------------------
+class BasicSerializer(Serializer):
+    id = IntegerField()
+
+
+# --------------------------------------------------
 # Routes
 # --------------------------------------------------
-# Must be imported after settings.configure
-from rest_framework.views import APIView  # noqa
-from rest_framework.viewsets import GenericViewSet  # noqa
-from django_utils_kit.permissions import BlockAll, IsNotAuthenticated  # noqa
-
-
 class ConflictExampleView(APIView):
     def get(self, _request: Request) -> Response:
         raise Conflict()
@@ -118,6 +127,23 @@ class IsNotAuthenticatedViewSet(GenericViewSet):
         return Response(data={"is_authenticated": False})
 
 
+class ImprovedViewSetExample(ImprovedViewSet):
+    default_permission_classes = [BlockAll]
+    default_serializer_class = None
+    permission_classes_per_action = {"list": [AllowAny]}
+    serializer_class_per_action = {"list": BasicSerializer}
+
+    def list(self, request: Request) -> Response:
+        if request.query_params.get("error") == "true":
+            self.get_valid_serializer(data={"id": "ok"})
+        serializer = self.get_valid_serializer(data={"id": 1})
+        data = {"name": serializer.__class__.__name__}
+        return Response(data)
+
+    def retrieve(self, request: Request, pk: int) -> Response:
+        return Response()
+
+
 urlpatterns = [
     path("conflict-example/", ConflictExampleView.as_view(), name="conflict-example"),
     path(
@@ -132,6 +158,16 @@ urlpatterns = [
         "is-not-authenticated/",
         IsNotAuthenticatedViewSet.as_view({"get": "list"}),
         name="is-not-authenticated",
+    ),
+    path(
+        "improved-viewset/",
+        ImprovedViewSetExample.as_view({"get": "list"}),
+        name="improved-viewset",
+    ),
+    path(
+        "improved-viewset/<int:pk>/",
+        ImprovedViewSetExample.as_view({"get": "retrieve"}),
+        name="improved-viewset",
     ),
 ]
 
