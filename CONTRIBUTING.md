@@ -20,7 +20,7 @@ You can run tests using `unittest` or `coverage` with our custom setup script:
 With `unittest`:
 
 ```shell
-python -m unittest django_utils_kit/tests/setup.py
+python django_utils_kit/tests/setup.py
 ```
 
 With `coverage`:
