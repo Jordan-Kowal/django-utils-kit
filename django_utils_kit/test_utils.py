@@ -7,7 +7,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ByteString,
-    Callable,
     Dict,
     Iterable,
     List,
@@ -42,23 +41,8 @@ if TYPE_CHECKING:
 CONTENT_DISPOSITION = 'attachment; filename="{file_name}"'
 
 
-def assert_logs(logger: str, level: str) -> Callable:
-    """Wraps a test into a `self.assertLogs`."""
-    level = level.upper()
-
-    def decorator(function: Callable) -> Callable:
-        def wrapper(self: TestCase, *args: Any, **kwargs: Any) -> Any:
-            with self.assertLogs(logger=logger, level=level) as context:
-                self.logger_context = context
-                return function(self, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
-
-
 class AssertionTestCase(TestCase):
-    """A `TestCase` with some assertion methods."""
+    """Adds new assertions to TestCase."""
 
     def assertDictEqual(
         self,
@@ -66,7 +50,14 @@ class AssertionTestCase(TestCase):
         d2: Mapping[Any, object],
         msg: Optional[str] = None,
     ) -> None:
-        """Overrides `assertDictEqual` to handle `OrderedDict` instances."""
+        """
+        Overrides `assertDictEqual` to handle `OrderedDict` instances.
+
+        Args:
+            d1 (Mapping[Any, object]): First dictionary
+            d2 (Mapping[Any, object]): Second dictionary
+            msg (Optional[str], optional): Error message to display. Defaults to None.
+        """
         if isinstance(d1, OrderedDict):
             d1 = dict(d1)
         if isinstance(d2, OrderedDict):
@@ -79,12 +70,27 @@ class AssertionTestCase(TestCase):
         string_date: Optional[str],
         format: Optional[str] = "%Y-%m-%dT%H:%M:%S.%fZ",
     ) -> None:
+        """
+        Compares a date instance with a string date to see if they are equal.
+
+        Args:
+            instance_date (Optional[Union[datetime.datetime, datetime.date]]): Optional date or datetime instance
+            string_date (Optional[str]): Optional string representation of a date
+            format (Optional[str]): The string format. Defaults to "%Y-%m-%dT%H:%M:%S.%fZ".
+        """
         if not instance_date:
             self.assertIsNone(string_date)
         else:
             self.assertEqual(instance_date.strftime(format), string_date)
 
     def assertDownloadFile(self, response: Response, file_name: str) -> None:
+        """
+        Asserts that a file was downloaded using the `Content-Disposition` header.
+
+        Args:
+            response (Response): The HTTP/API response
+            file_name (str): The expected filename available in the header
+        """
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.get("Content-Disposition"),
@@ -94,6 +100,15 @@ class AssertionTestCase(TestCase):
     def assertDownloadZipFile(
         self, response: Response, file_name: str, zip_content: List[str]
     ) -> None:
+        """
+        Asserts that a zip file was downloaded using the `Content-Disposition` header
+        and contains the expected files.
+
+        Args:
+            response (Response): The HTTP/API response
+            file_name (str): The expected filename for the ZIP file
+            zip_content (List[str]): The expected files in the ZIP file
+        """
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.get("Content-Disposition"),
@@ -111,6 +126,15 @@ class AssertionTestCase(TestCase):
         cc: Optional[List[str]] = None,
         bcc: Optional[List[str]] = None,
     ) -> None:
+        """
+        Asserts that an email was sent with the provided subject, to, cc, and bcc.
+
+        Args:
+            subject (str): The expected subject
+            to (Optional[List[str]], optional): List of recipients. Defaults to None.
+            cc (Optional[List[str]], optional): List of CC recipients. Defaults to None.
+            bcc (Optional[List[str]], optional): List of BCC recipients. Defaults to None.
+        """
         email = mail.outbox[-1]
         self.assertEqual(email.subject, subject)
         if to is not None:
@@ -128,6 +152,13 @@ class AssertionTestCase(TestCase):
         response: Response,
         key_paths: List[str],
     ) -> None:
+        """
+        Asserts that the response contains errors for the provided key paths
+
+        Args:
+            response (Response): The HTTP/API response
+            key_paths (List[str]): A list of paths to the fields
+        """
         self.assertEqual(response.status_code, 400)
         for key_path in key_paths:
             # key_path example: "valves.0.description"
@@ -144,6 +175,13 @@ class AssertionTestCase(TestCase):
         file_1: Union[FileField, SimpleUploadedFile],
         file_2: Union[FileField, SimpleUploadedFile],
     ) -> None:
+        """
+        Asserts that the contents of two files are equal.
+
+        Args:
+            file_1 (Union[FileField, SimpleUploadedFile]): The first file to compare
+            file_2 (Union[FileField, SimpleUploadedFile]): The second file to compare
+        """
         # Reset cursor position to make sure we compare the whole file
         file_1.seek(0)
         file_2.seek(0)
@@ -153,21 +191,49 @@ class AssertionTestCase(TestCase):
         self.assertEqual(content_1, content_2)
 
     def assertFileIsNone(self, file_field: FileField) -> None:
+        """
+        Shortcut to assert that a file field is empty.
+
+        Args:
+            file_field (FileField): The file field to check.
+        """
         self.assertFalse(bool(file_field))
 
     def assertImageToBase64(
         self, img: ImageField, data: ByteString, resize_to: Optional[int] = None
     ) -> None:
+        """
+        Asserts that the provided data matches with the base64 representation of the image.
+
+        Args:
+            img (ImageField): The image to convert.
+            data (ByteString): The expected base64 data.
+            resize_to (Optional[int], optional): The size to resize the image to before converting to base 64. Defaults to None.
+        """
         converted_image = image_to_base64(img, resize_to)
         self.assertEqual(converted_image, data)
 
     def assertIntegrityErrorOnSave(self, instance: Model) -> None:
+        """
+        Shortcut to assert that an integrity error is raised when saving a model instance.
+
+        Args:
+            instance (Model): The model instance to save.
+        """
         with self.assertRaises(IntegrityError):
             instance.save()
 
     def assertQuerySetPks(
         self, queryset: QuerySet, expected_pks: Iterable[Any], pk: str = "id"
     ) -> None:
+        """
+        Shortcut to assert that a query set has the expected pks.
+
+        Args:
+            queryset (QuerySet): The query set to check.
+            expected_pks (Iterable[Any]): The expected pks.
+            pk (str, optional): The primary key field. Defaults to "id".
+        """
         queryset_pks = {getattr(item, pk) for item in queryset}
         self.assertSetEqual(queryset_pks, set(expected_pks))
 
@@ -179,27 +245,56 @@ class ImprovedTestCase(AssertionTestCase):
     def build_fake_request(
         method: str = "get", path: str = "/", data: Dict = None
     ) -> Request:
+        """
+        Builds a fake request to simulate an HTTP or API call.
+
+        Args:
+            method (str, optional): The HTTP method. Defaults to "get".
+            path (str, optional): The request path. Defaults to "/".
+            data (Dict, optional): The request data. Defaults to None.
+
+        Returns:
+            Request: The built request.
+        """
         factory = RequestFactory()
         factory_call = getattr(factory, method.lower())
         return factory_call(path, data=data)
 
     @staticmethod
-    def generate_non_existing_id(model: Type[Model]) -> Any:
-        instance = model.objects.all().order_by("-id").first()
-        return 1 if not instance else instance.id + 1
+    def generate_non_existing_id(model_class: Type[Model], pk_field: str = "id") -> Any:
+        """
+        Generates a new and not-already-existing pk for a model.
+        Only works for integer primary keys.
+
+        Args:
+            model_class (Type[Model]): The model class.
+            pk_field (str, optional): The primary key field. Defaults to "id".
+
+        Returns:
+            Any: _description_
+        """
+        instance = model_class.objects.all().order_by(f"-{pk_field}").first()
+        return 1 if not instance else getattr(instance, pk_field) + 1
 
     @staticmethod
     def uploaded_file_from_path(
         filepath: str, upload_name: Optional[str] = None
     ) -> SimpleUploadedFile:
+        """
+        Creates a SimpleUploadedFile from a file path.
+
+        Args:
+            filepath (str): path to the file
+            upload_name (Optional[str], optional): name of the file. Defaults to None.
+
+        Returns:
+            SimpleUploadedFile: The uploaded file
+        """
         if upload_name is None:
             upload_name = filepath.split("/")[-1]
         with open(filepath, "rb") as f:
             binary_content = f.read()
-        return SimpleUploadedFile(
-            name=upload_name,
-            content=binary_content,
-        )
+        return SimpleUploadedFile(name=upload_name, content=binary_content)
 
 
 class APITestCase(ImprovedTestCase):
@@ -211,6 +306,7 @@ class APITestCase(ImprovedTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        """Instantiate the API client."""
         cls.api_client = cls.api_client_class()
         super().setUpClass()
 
@@ -220,6 +316,17 @@ class APITestCase(ImprovedTestCase):
         kwargs: Optional[Dict] = None,
         query_kwargs: Optional[Dict] = None,
     ) -> str:
+        """
+        Builds a URL from a name and optional kwargs and query kwargs.
+
+        Args:
+            name (str): Name of the url (to use `reverse`)
+            kwargs (Optional[Dict], optional): The kwargs to pass to `reverse`. Defaults to None.
+            query_kwargs (Optional[Dict], optional): The query kwargs to add to the URL. Defaults to None.
+
+        Returns:
+            str: The computed URL
+        """
         url = reverse(name, kwargs=kwargs)
         if query_kwargs is not None:
             url += f"?{urlencode(query_kwargs)}"
@@ -227,7 +334,12 @@ class APITestCase(ImprovedTestCase):
 
     @staticmethod
     def disconnect_user(user: "UserType") -> None:
-        """Removes all active sessions for the user."""
+        """
+        Removes all active sessions for the user.
+
+        Args:
+            user (UserType): A user instance
+        """
         user_active_session_ids = []
         all_active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
         for session in all_active_sessions:
@@ -238,6 +350,15 @@ class APITestCase(ImprovedTestCase):
 
     @staticmethod
     def parse_streaming_response(response: StreamingHttpResponse) -> Union[Dict, List]:
+        """
+        Parses a streaming response into a JSON object.
+
+        Args:
+            response (StreamingHttpResponse): The streaming response to parse
+
+        Returns:
+            Union[Dict, List]: The parsed JSON object
+        """
         return json.loads(b"".join(response.streaming_content).decode("utf-8"))
 
     def multipart_api_call(
@@ -248,8 +369,17 @@ class APITestCase(ImprovedTestCase):
         *args: Any,
         **kwargs: Any,
     ) -> Response:
-        """Transforms a JSON payload into a flattened form-data and performs a
-        multipart request."""
+        """
+        Transforms a JSON payload into a flattened form-data and performs a multipart request.
+
+        Args:
+            method (str): The HTTP method to use (e.g., "POST", "GET", etc.)
+            url (str): The URL to send the request to.
+            payload (Dict[str, Any]): The JSON payload to transform into form-data.
+
+        Returns:
+            Response: The response from the API call.
+        """
         flat_dict = self._dict_to_flat_dict(payload)
         data = encode_multipart(data=flat_dict, boundary=BOUNDARY)
         method = getattr(self.api_client, method.lower())
@@ -257,10 +387,15 @@ class APITestCase(ImprovedTestCase):
 
     @staticmethod
     def _dict_to_flat_dict(data: Dict[str, Any]) -> Dict[str, Union[str, int, bool]]:
-        """Recursively flattens a dict.
-
-        Keys for nested arrays or dicts might look like this:
+        """
+        Recursively flattens a dict. Keys for nested arrays or dicts might look like this:
         'key[0][subkey][3]'
+
+        Args:
+            data (Dict[str, Any]): The dict to flatten
+
+        Returns:
+            Dict[str, Union[str, int, bool]]: The flattened dict
         """
         flat_dict = {}
 
