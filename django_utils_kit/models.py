@@ -1,7 +1,7 @@
 """Additional model classes and utilities for Django."""
 
 import os
-from typing import Any, List, Optional, Type
+from typing import Any, List
 import uuid
 
 from django import forms
@@ -68,17 +68,6 @@ class FileNameWithUUID(object):
         name = os.path.splitext(filename)[0]
         extension = os.path.splitext(filename)[1]
         return self.path % (name + "_" + str(uuid.uuid4()), extension)
-
-
-def maybe_get_instance(
-    model_class: Type[models.Model], *args: Any, **kwargs: Any
-) -> Optional[models.Model]:
-    """Returns an instance of a model if it exists, otherwise returns None."""
-    try:
-        item = model_class.objects.get(*args, **kwargs)
-    except model_class.DoesNotExist:
-        return None
-    return item
 
 
 def update_model_instance(instance: models.Model, **kwargs: Any) -> models.Model:
