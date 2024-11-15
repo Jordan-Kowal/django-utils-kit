@@ -1,4 +1,4 @@
-"""Utilities for handling files within Django."""
+"""Utilities for handling files with DRF."""
 
 from io import BytesIO
 from typing import List

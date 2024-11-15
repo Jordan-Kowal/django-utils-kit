@@ -1,4 +1,4 @@
-"""Additional serializers and fields for Django and DRF."""
+"""Additional serializers and fields for DRF."""
 
 from typing import Any, Dict
 

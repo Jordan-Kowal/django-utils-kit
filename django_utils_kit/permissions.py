@@ -1,4 +1,4 @@
-"""Additional permissions for both Django and DRF."""
+"""Additional permissions for DRF."""
 
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.request import Request

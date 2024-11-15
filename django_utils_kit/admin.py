@@ -1,4 +1,4 @@
-"""Additional admin classes and mixins for Django."""
+"""Additional classes and mixins for Django admin."""
 
 from typing import Optional
 

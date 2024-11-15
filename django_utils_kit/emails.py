@@ -1,4 +1,4 @@
-"""Utilities for sending emails through Django."""
+"""Classes to easily send sync and async emails through Django."""
 
 from threading import Thread
 from typing import Any, Dict, List, Optional

@@ -1,3 +1,5 @@
+"""Custom ViewSets for DRF."""
+
 from typing import Any, Dict, List, Optional, Sequence, Type
 
 from rest_framework.permissions import BasePermission

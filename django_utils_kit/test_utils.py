@@ -1,4 +1,4 @@
-"""Additional TestCase classes for easier testing in Django."""
+"""Additional TestCase classes with new assertions and utilities."""
 
 import datetime
 from io import BytesIO

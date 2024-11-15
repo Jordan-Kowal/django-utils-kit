@@ -1,4 +1,4 @@
-"""Additional model classes and utilities for Django."""
+"""Additional classes and utilities for Django models."""
 
 import os
 from typing import Any, List
