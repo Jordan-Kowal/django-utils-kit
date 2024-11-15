@@ -30,11 +30,11 @@ Provides various utilities for working with Django and DRF:
 
 ## 💻 How to install
 
-The package is available on PyPi with the name `django_utils_kit`.
+The package is available on PyPi with the name `django-utils-kit`.
 Simply run:
 
 ```shell
-pip install django_utils_kit
+pip install django-utils-kit
 ```
 
 ## 📕 Available imports
