@@ -7,7 +7,7 @@ from django.http.request import HttpRequest
 
 
 class ReadOnlyAdminMixin:
-    """Removes all write permissions from the admin."""
+    """Removes all write permissions for the admin view."""
 
     @staticmethod
     def has_add_permission(request: HttpRequest, obj: Optional[Model] = None) -> bool:

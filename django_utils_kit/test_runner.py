@@ -65,8 +65,7 @@ class Result:
 
 
 class TimedTextTestResult(TextTestResult):
-    """Extends TextTestResult to track execution time of each test and print
-    them."""
+    """Extends TextTestResult to track execution time of each test and print them."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(TimedTextTestResult, self).__init__(*args, **kwargs)
@@ -126,10 +125,12 @@ class TimedTextTestResult(TextTestResult):
             print(f"\t{FAILURE_COLOR}{result.test}{ENDC_COLOR}")
 
     def _get_result(self, test: Any) -> Result:
-        """We might end up with an unknown key when crashing in a setUpClass
+        """
+        We might end up with an unknown key when crashing in a setUpClass
         method All its tests will be ignored, but to avoid crashing, we create
         a test result on the fly And store that result in the unknown errors
-        list."""
+        list.
+        """
         result = self.clocks.get(f"{test}")
         if result is None:
             result = Result(test)

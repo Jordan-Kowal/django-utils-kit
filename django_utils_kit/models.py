@@ -10,6 +10,12 @@ from django.utils.deconstruct import deconstructible
 
 
 class ImprovedModel(models.Model):
+    """
+    Improved version of the Django Model class, with various utilities:
+    - Add pre_save and post_save hooks
+    - Add pre_delete and post_delete hooks
+    """
+
     class Meta:
         abstract = True
 
@@ -47,8 +53,7 @@ class PreCleanedAbstractModel(models.Model):
         super().save(*args, **kwargs)
 
     def _perform_pre_save_clean(self) -> None:
-        """Calls .full_clean() and changes ValidationErrors to
-        IntegrityErrors."""
+        """Calls .full_clean() and changes ValidationErrors to IntegrityErrors."""
         try:
             self.full_clean()
         except forms.ValidationError as e:
@@ -59,7 +64,16 @@ class PreCleanedAbstractModel(models.Model):
 
 @deconstructible
 class FileNameWithUUID(object):
-    """Generates a unique file name with a UUID."""
+    """
+    Will add a random UUID to the filename before saving it.
+
+    Usage:
+        >>> models.ImageField(
+        ...     upload_to=FileNameWithUUID("django_utils_kit/tests/fake_app/avatars"),
+        ...     null=True,
+        ...     blank=True,
+        ... )
+    """
 
     def __init__(self, path: str) -> None:
         self.path = os.path.join(path, "%s%s")
@@ -71,7 +85,16 @@ class FileNameWithUUID(object):
 
 
 def update_model_instance(instance: models.Model, **kwargs: Any) -> models.Model:
-    """Updates a model instance with the provided kwargs."""
+    """
+    Shortcut to update a model instance with the provided fields/values (kwargs).
+
+    Args:
+        instance (models.Model): The model instance to update.
+        **kwargs: The fields/values to update.
+
+    Returns:
+        models.Model: The updated model instance.
+    """
     for key, value in kwargs.items():
         setattr(instance, key, value)
     instance.save()
@@ -82,7 +105,16 @@ def update_m2m(
     m2m_field: models.Manager,
     ids: List[str],
 ) -> None:
-    """Updates a many-to-many field with a list of ids."""
+    """
+    Overrides the given m2m field with the provided ids
+
+    Args:
+        m2m_field (models.Manager): The m2m field to update
+        ids (List[str]): The ids to set on the m2m field
+
+    Usage:
+        >>> update_m2m(instance.tags, [tag_1.id, tag_2.id])
+    """
     unique_ids = set(ids or [])
     existing_m2m_fks = m2m_field.all().values_list("id", flat=True)
     # Delete m2m instances that are not in the provided ids

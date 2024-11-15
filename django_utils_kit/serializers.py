@@ -6,11 +6,11 @@ from django.conf import settings
 from django.db.models import Model
 from rest_framework import serializers
 
-from django_utils_kit.images import downsize_image_to_base64
+from django_utils_kit.images import image_to_base64
 
 
 class ReadOnlyModelSerializer(serializers.ModelSerializer):
-    """A `ModelSerializer` that only allows for reading."""
+    """`ModelSerializer` blocks create/update methods."""
 
     def create(self, validated_data: Dict[str, Any]) -> Model:
         raise NotImplementedError
@@ -20,7 +20,7 @@ class ReadOnlyModelSerializer(serializers.ModelSerializer):
 
 
 class ThumbnailField(serializers.ImageField):
-    """A `serializers.ImageField` that returns a thumbnail."""
+    """`ImageField` with a representation that returns a base64 downsized image."""
 
     def to_representation(self, data: serializers.ImageField) -> bytes:
-        return downsize_image_to_base64(data, settings.MAX_THUMBNAIL_SIZE)
+        return image_to_base64(data, settings.MAX_THUMBNAIL_SIZE)

@@ -2,7 +2,7 @@
 
 import base64
 from io import BytesIO
-from typing import Tuple
+from typing import Optional, Tuple
 
 from PIL import Image
 
@@ -16,8 +16,16 @@ IMAGE_TYPES = {
 }
 
 
-def downsize_image(file_path: str, width: int, height: int) -> None:
-    """Downsizes an image to the given dimensions while keeping its ratio."""
+def downsize_and_save_image_from_path(file_path: str, width: int, height: int) -> None:
+    """
+    Given a image file path, downsizes it to the given dimensions while keeping its ratio.
+    Does nothing if the image is already small-enough.
+
+    Args:
+        file_path (str): path to the existing image
+        width (int): width to downsize to
+        height (int): height to downsize to
+    """
     img = Image.open(file_path)
     if (img.height > height) or (img.width > width):
         output_size = (width, height)
@@ -25,16 +33,18 @@ def downsize_image(file_path: str, width: int, height: int) -> None:
         img.save(file_path)
 
 
-def image_to_base64(file_path: str) -> bytes:
-    """Converts an image to base64."""
-    buffered = BytesIO()
-    original_image = Image.open(file_path)
-    original_image.save(buffered, format=original_image.format)
-    return base64.b64encode(buffered.getvalue())
+def downsize_image(img: Image.Image, max_size: int) -> Tuple[bool, Image.Image]:
+    """
+    Resizes an image to the given max size while keeping its ratio.
+    Does not save the resized image, returns it instead.
 
+    Args:
+        img (Image.Image): Image object to resize
+        max_size (int): max size to resize to
 
-def maybe_downsize_image(img: Image.Image, max_size: int) -> Tuple[bool, Image.Image]:
-    """Resizes an image to the given max size while keeping its ratio."""
+    Returns:
+        Tuple[bool, Image.Image]: resized, image
+    """
     min_length, max_length = sorted([img.width, img.height])
     resized = False
     if max_length > max_size:
@@ -47,10 +57,21 @@ def maybe_downsize_image(img: Image.Image, max_size: int) -> Tuple[bool, Image.I
     return resized, img
 
 
-def downsize_image_to_base64(data: str, max_size: int) -> bytes:
-    """Resizes an image to the given max size and converts it to base64."""
+def image_to_base64(file_path: str, downsize_to: Optional[int] = None) -> bytes:
+    """
+    Converts an image to base64, optionally downsizing it.
+
+    Args:
+        file_path (str): path to the existing image
+        downsize_to (Optional[int]): max size to resize to
+
+    Returns:
+        bytes: base64 representation of the image
+    """
     buffered = BytesIO()
-    original_image = Image.open(data)
-    _, resized_image = maybe_downsize_image(original_image, max_size)
-    resized_image.save(buffered, format=original_image.format)
+    image = Image.open(file_path)
+    format = image.format
+    if downsize_to:
+        _, image = downsize_image(image, downsize_to)  # type: ignore
+    image.save(buffered, format=format)
     return base64.b64encode(buffered.getvalue())

@@ -34,7 +34,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
-from django_utils_kit.images import downsize_image_to_base64, image_to_base64
+from django_utils_kit.images import image_to_base64
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import User as UserType
@@ -158,11 +158,7 @@ class AssertionTestCase(TestCase):
     def assertImageToBase64(
         self, img: ImageField, data: ByteString, resize_to: Optional[int] = None
     ) -> None:
-        converted_image = (
-            downsize_image_to_base64(img, resize_to)
-            if resize_to is not None
-            else image_to_base64(img)
-        )
+        converted_image = image_to_base64(img, resize_to)
         self.assertEqual(converted_image, data)
 
     def assertIntegrityErrorOnSave(self, instance: Model) -> None:
