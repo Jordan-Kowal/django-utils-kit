@@ -12,6 +12,7 @@
   - [💻 How to install](#-how-to-install)
   - [📕 Available imports](#-available-imports)
   - [🔗 Useful links](#-useful-links)
+  - [⏳ Stats](#-stats)
 
 Provides various utilities for working with Django and DRF:
 
@@ -71,3 +72,7 @@ from django_utils_kit.viewsets import ImprovedViewSet
 
 - [Want to contribute?](CONTRIBUTING.md)
 - [See what's new!](CHANGELOG.md)
+
+## ⏳ Stats
+
+![Alt](https://repobeats.axiom.co/api/embed/7737e6de1232f7c80366bc34f2b2d78861727e2b.svg "Repobeats analytics image")
