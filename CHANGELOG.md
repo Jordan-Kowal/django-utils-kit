@@ -7,6 +7,10 @@
 - 🐞 Bugfixes
 - 🔧 Others
 
+## TBD
+
+- 🔧 Added `CODEOWNERS` file
+
 ## 1.0.2 - 2025-04-18
 
 - 🔧 Removed `update_deps` action
