@@ -167,7 +167,7 @@ class AssertionTestCase(TestCase):
                 if isinstance(value, list):
                     value = value[int(key)]
                 else:
-                    value = value.get(key)
+                    value = value.get(key)  # ty: ignore
             self.assertIsNotNone(value)
 
     def assertFileEqual(
@@ -183,11 +183,11 @@ class AssertionTestCase(TestCase):
             file_2 (Union[FileField, SimpleUploadedFile]): The second file to compare
         """
         # Reset cursor position to make sure we compare the whole file
-        file_1.seek(0)
-        file_2.seek(0)
+        file_1.seek(0)  # ty: ignore
+        file_2.seek(0)  # ty: ignore
         # .read() must be stored within variable or it won't work
-        content_1 = file_1.read()
-        content_2 = file_2.read()
+        content_1 = file_1.read()  # ty: ignore
+        content_2 = file_2.read()  # ty: ignore
         self.assertEqual(content_1, content_2)
 
     def assertFileIsNone(self, file_field: FileField) -> None:
@@ -210,7 +210,7 @@ class AssertionTestCase(TestCase):
             data (ByteString): The expected base64 data.
             resize_to (Optional[int], optional): The size to resize the image to before converting to base 64. Defaults to None.
         """
-        converted_image = image_to_base64(img, resize_to)
+        converted_image = image_to_base64(img, resize_to)  # ty: ignore
         self.assertEqual(converted_image, data)
 
     def assertIntegrityErrorOnSave(self, instance: Model) -> None:
@@ -243,7 +243,7 @@ class ImprovedTestCase(AssertionTestCase):
 
     @staticmethod
     def build_fake_request(
-        method: str = "get", path: str = "/", data: Dict = None
+        method: str = "get", path: str = "/", data: Optional[Dict] = None
     ) -> Request:
         """
         Builds a fake request to simulate an HTTP or API call.

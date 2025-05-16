@@ -1,10 +1,12 @@
 """Network related utilities to handle requests."""
 
+from typing import Union
+
 from django.conf import settings
 from django.http import HttpRequest
 
 
-def get_client_ip(request: HttpRequest) -> str:
+def get_client_ip(request: HttpRequest) -> Union[str, None]:
     """
     Gets the client IP address from the request.
 
@@ -14,8 +16,9 @@ def get_client_ip(request: HttpRequest) -> str:
     Returns:
         str: The client IP address.
     """
-    if request.META.get("HTTP_X_FORWARDED_FOR"):
-        return request.META.get("HTTP_X_FORWARDED_FOR").split(",")[-1].strip()
+    forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if forwarded_for:
+        return forwarded_for.split(",")[-1].strip()
     elif request.META.get("HTTP_X_REAL_IP"):
         return request.META.get("HTTP_X_REAL_IP")
     return request.META.get("REMOTE_ADDR")

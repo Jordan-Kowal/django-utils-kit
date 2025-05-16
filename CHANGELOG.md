@@ -10,6 +10,7 @@
 ## TBD
 
 - 🔧 Added `CODEOWNERS` file
+- 🔧 Replaced `mypy` with `ty` for faster type checking
 
 ## 1.0.2 - 2025-04-18
 

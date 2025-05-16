@@ -23,4 +23,4 @@ class ThumbnailField(serializers.ImageField):
     """`ImageField` with a representation that returns a base64 downsized image."""
 
     def to_representation(self, data: serializers.ImageField) -> bytes:
-        return image_to_base64(data, settings.MAX_THUMBNAIL_SIZE)
+        return image_to_base64(data, settings.MAX_THUMBNAIL_SIZE)  # ty: ignore

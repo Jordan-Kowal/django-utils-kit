@@ -25,6 +25,8 @@ class Result:
     def __init__(self, test: Any) -> None:
         self.test = test
         match = re.match("^(.+) \((.+)\)$", str(test))  # noqa
+        if match is None:
+            return
         self.app: str = match.group(2).split(".")[0]
         self.case: str = match.group(2).split(".")[-1]
         self.test_name: str = match.group(1)
