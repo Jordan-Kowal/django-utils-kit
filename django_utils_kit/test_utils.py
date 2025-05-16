@@ -383,7 +383,7 @@ class APITestCase(ImprovedTestCase):
         flat_dict = self._dict_to_flat_dict(payload)
         data = encode_multipart(data=flat_dict, boundary=BOUNDARY)
         method = getattr(self.api_client, method.lower())
-        return method(url, data=data, content_type=MULTIPART_CONTENT, *args, **kwargs)  # type: ignore
+        return method(url, data=data, content_type=MULTIPART_CONTENT, *args, **kwargs)
 
     @staticmethod
     def _dict_to_flat_dict(data: Dict[str, Any]) -> Dict[str, Union[str, int, bool]]:

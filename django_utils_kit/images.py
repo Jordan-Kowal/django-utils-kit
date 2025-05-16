@@ -72,6 +72,6 @@ def image_to_base64(file_path: str, downsize_to: Optional[int] = None) -> bytes:
     image = Image.open(file_path)
     format = image.format
     if downsize_to:
-        _, image = downsize_image(image, downsize_to)  # type: ignore
+        _, image = downsize_image(image, downsize_to)
     image.save(buffered, format=format)
     return base64.b64encode(buffered.getvalue())

@@ -145,7 +145,7 @@ class TimedTextTestRunner(TextTestRunner):
 
     resultclass = TimedTextTestResult
 
-    def run(self, test: Any) -> TestResult:  # type: ignore
+    def run(self, test: Any) -> TestResult:
         result = super().run(test)
         result.show_execution_times()
         result.show_unknown_errors()
