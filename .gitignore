@@ -66,6 +66,3 @@ coverage.xml
 
 ### MyPy ###
 .mypy_cache
-
-### Translation ###
-# *.mo
