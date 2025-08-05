@@ -11,7 +11,7 @@
 
 - 🔧 Added `CODEOWNERS` file
 - 🔧 Replaced `mypy` with `ty` for faster type checking
-- 🔧 Fallback to `update-uv-lockfile` action for dependency upgrades
+- 🔧 Fallback to `update-uv-lockfile` action for monthly dependency updates
 
 ## 1.0.2 - 2025-04-18
 
