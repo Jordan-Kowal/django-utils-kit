@@ -1,7 +1,6 @@
 """Utilities for handling files with DRF."""
 
 from io import BytesIO
-from typing import List
 from urllib.parse import urlparse
 import zipfile
 
@@ -27,13 +26,13 @@ def download_file(path: str, storage: Storage) -> StreamingHttpResponse:
 
 
 def download_files_as_zip(
-    paths: List[str], output_filename: str, storage: Storage
+    paths: list[str], output_filename: str, storage: Storage
 ) -> HttpResponse:
     """
     Downloads a zip-file from a storage backend.
 
     Args:
-        paths (List[str]): paths to the files
+        paths (list[str]): paths to the files
         output_filename (str): name of the generated and to-be-downloaded zip-file
         storage (Storage): storage backend
 

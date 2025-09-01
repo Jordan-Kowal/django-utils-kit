@@ -1,6 +1,7 @@
 """Custom ViewSets for DRF."""
 
-from typing import Any, Dict, List, Optional, Sequence, Type
+from collections.abc import Sequence
+from typing import Any
 
 from rest_framework.permissions import BasePermission
 from rest_framework.serializers import BaseSerializer
@@ -14,12 +15,12 @@ class ImprovedViewSet(GenericViewSet):
     and provides various utilities for working with viewsets.
     """
 
-    default_permission_classes: Sequence[Type[BasePermission]] = ()
-    default_serializer_class: Optional[Type[BaseSerializer]] = None
-    permission_classes_per_action: Dict[str, Sequence[Type[BasePermission]]] = {}
-    serializer_class_per_action: Dict[str, Type[BaseSerializer]] = {}
+    default_permission_classes: Sequence[type[BasePermission]] = ()
+    default_serializer_class: type[BaseSerializer] | None = None
+    permission_classes_per_action: dict[str, Sequence[type[BasePermission]]] = {}
+    serializer_class_per_action: dict[str, type[BaseSerializer]] = {}
 
-    def get_permissions(self) -> List[BasePermission]:
+    def get_permissions(self) -> list[BasePermission]:
         permissions = self.permission_classes_per_action.get(
             self.action, self.default_permission_classes
         )
@@ -27,7 +28,7 @@ class ImprovedViewSet(GenericViewSet):
             permissions = api_settings.DEFAULT_PERMISSION_CLASSES
         return [permission() for permission in permissions]
 
-    def get_serializer_class(self) -> Type[BaseSerializer]:
+    def get_serializer_class(self) -> type[BaseSerializer] | None:
         return self.serializer_class_per_action.get(
             self.action, self.default_serializer_class
         )

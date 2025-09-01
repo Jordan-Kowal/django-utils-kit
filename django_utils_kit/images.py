@@ -2,7 +2,6 @@
 
 import base64
 from io import BytesIO
-from typing import Optional, Tuple
 
 from PIL import Image
 
@@ -33,7 +32,7 @@ def downsize_and_save_image_from_path(file_path: str, width: int, height: int) -
         img.save(file_path)
 
 
-def downsize_image(img: Image.Image, max_size: int) -> Tuple[bool, Image.Image]:
+def downsize_image(img: Image.Image, max_size: int) -> tuple[bool, Image.Image]:
     """
     Resizes an image to the given max size while keeping its ratio.
     Does not save the resized image, returns it instead.
@@ -43,7 +42,7 @@ def downsize_image(img: Image.Image, max_size: int) -> Tuple[bool, Image.Image]:
         max_size (int): max size to resize to
 
     Returns:
-        Tuple[bool, Image.Image]: resized, image
+        tuple[bool, Image.Image]: resized, image
     """
     min_length, max_length = sorted([img.width, img.height])
     resized = False
@@ -57,13 +56,13 @@ def downsize_image(img: Image.Image, max_size: int) -> Tuple[bool, Image.Image]:
     return resized, img
 
 
-def image_to_base64(file_path: str, downsize_to: Optional[int] = None) -> bytes:
+def image_to_base64(file_path: str, downsize_to: int | None = None) -> bytes:
     """
     Converts an image to base64, optionally downsizing it.
 
     Args:
         file_path (str): path to the existing image
-        downsize_to (Optional[int]): max size to resize to
+        downsize_to (int | None): max size to resize to
 
     Returns:
         bytes: base64 representation of the image

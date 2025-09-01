@@ -1,7 +1,7 @@
 """Additional classes and utilities for Django models."""
 
 import os
-from typing import Any, List
+from typing import Any
 import uuid
 
 from django import forms
@@ -103,14 +103,14 @@ def update_model_instance(instance: models.Model, **kwargs: Any) -> models.Model
 
 def update_m2m(
     m2m_field: models.Manager,
-    ids: List[str],
+    ids: list[str],
 ) -> None:
     """
     Overrides the given m2m field with the provided ids
 
     Args:
         m2m_field (models.Manager): The m2m field to update
-        ids (List[str]): The ids to set on the m2m field
+        ids (list[str]): The ids to set on the m2m field
 
     Usage:
         >>> update_m2m(instance.tags, [tag_1.id, tag_2.id])
