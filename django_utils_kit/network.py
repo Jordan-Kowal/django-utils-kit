@@ -1,12 +1,10 @@
 """Network related utilities to handle requests."""
 
-from typing import Union
-
 from django.conf import settings
 from django.http import HttpRequest
 
 
-def get_client_ip(request: HttpRequest) -> Union[str, None]:
+def get_client_ip(request: HttpRequest) -> str | None:
     """
     Gets the client IP address from the request.
 
@@ -14,7 +12,7 @@ def get_client_ip(request: HttpRequest) -> Union[str, None]:
         request (HttpRequest): The request object.
 
     Returns:
-        str: The client IP address.
+        str | None: The client IP address.
     """
     forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if forwarded_for:

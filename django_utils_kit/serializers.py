@@ -1,6 +1,6 @@
 """Additional serializers and fields for DRF."""
 
-from typing import Any, Dict
+from typing import Any
 
 from django.conf import settings
 from django.db.models import Model
@@ -12,10 +12,10 @@ from django_utils_kit.images import image_to_base64
 class ReadOnlyModelSerializer(serializers.ModelSerializer):
     """`ModelSerializer` blocks create/update methods."""
 
-    def create(self, validated_data: Dict[str, Any]) -> Model:
+    def create(self, validated_data: dict[str, Any]) -> Model:
         raise NotImplementedError
 
-    def update(self, instance: Model, validated_data: Dict[str, Any]) -> Model:
+    def update(self, instance: Model, validated_data: dict[str, Any]) -> Model:
         raise NotImplementedError
 
 

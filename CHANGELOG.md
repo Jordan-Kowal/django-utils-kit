@@ -12,6 +12,7 @@
 - 🔧 Added `CODEOWNERS` file
 - 🔧 Replaced `mypy` with `ty` for faster type checking
 - 🔧 Fallback to `update-uv-lockfile` action for monthly dependency updates
+- 🔧 Removed support for Python 3.9
 
 ## 1.0.2 - 2025-04-18
 

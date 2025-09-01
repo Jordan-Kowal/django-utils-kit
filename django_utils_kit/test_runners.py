@@ -2,7 +2,7 @@
 
 import re
 from time import perf_counter
-from typing import Any, Dict, List, Optional
+from typing import Any
 from unittest import TestResult, TextTestResult, TextTestRunner
 
 from django.test import runner
@@ -31,7 +31,7 @@ class Result:
         self.case: str = match.group(2).split(".")[-1]
         self.test_name: str = match.group(1)
         self.start: float = perf_counter()
-        self.end: Optional[float] = None
+        self.end: float | None = None
         self.symbol: str = self.DEFAULT_SYMBOL
 
     def __str__(self) -> str:
@@ -71,8 +71,8 @@ class TimedTextTestResult(TextTestResult):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(TimedTextTestResult, self).__init__(*args, **kwargs)
-        self.clocks: Dict[str, Result] = dict()
-        self.unknown_errors: List[Result] = []
+        self.clocks: dict[str, Result] = dict()
+        self.unknown_errors: list[Result] = []
 
     def startTest(self, test: Any) -> None:
         self.clocks[f"{test}"] = Result(test)

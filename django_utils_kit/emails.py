@@ -1,7 +1,7 @@
 """Classes to easily send sync and async emails through Django."""
 
 from threading import Thread
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -28,23 +28,23 @@ class Email:
 
     def send(
         self,
-        context: Dict[str, Any],
-        subject: Optional[str] = None,
-        to: Optional[List[str]] = None,
-        cc: Optional[List[str]] = None,
-        bcc: Optional[List[str]] = None,
-        from_email: Optional[str] = None,
+        context: dict[str, Any],
+        subject: str | None = None,
+        to: list[str] | None = None,
+        cc: list[str] | None = None,
+        bcc: list[str] | None = None,
+        from_email: str | None = None,
     ) -> None:
         """
         Sends an email using the current template and the provided context.
         Does nothing if no recipients are provided.
 
         Args:
-            context (Dict[str, Any]): The context to render the template with.
-            subject (Optional[str], optional): The subject of the email. Defaults to None.
-            to (Optional[List[str]], optional): The list of recipients. Defaults to None.
-            cc (Optional[List[str]], optional): The list of CC recipients. Defaults to None.
-            bcc (Optional[List[str]], optional): The list of BCC recipients. Defaults to None.
+            context (dict[str, Any]): The context to render the template with.
+            subject (str | None, optional): The subject of the email. Defaults to None.
+            to (list[str] | None, optional): The list of recipients. Defaults to None.
+            cc (list[str] | None, optional): The list of CC recipients. Defaults to None.
+            bcc (list[str] | None, optional): The list of BCC recipients. Defaults to None.
             from_email (Optional[str], optional): The sender email address. Defaults to None.
         """
         to = to or []
@@ -66,24 +66,24 @@ class Email:
 
     def send_async(
         self,
-        context: Dict[str, Any],
-        subject: Optional[str] = None,
-        to: Optional[List[str]] = None,
-        cc: Optional[List[str]] = None,
-        bcc: Optional[List[str]] = None,
-        from_email: Optional[str] = None,
+        context: dict[str, Any],
+        subject: str | None = None,
+        to: list[str] | None = None,
+        cc: list[str] | None = None,
+        bcc: list[str] | None = None,
+        from_email: str | None = None,
     ) -> Thread:
         """
         Sends an email asynchronously using the current template and the provided context.
         Exactly the same as `send` but returns a `Thread` object.
 
         Args:
-            context (Dict[str, Any]): The context to render the template with.
-            subject (Optional[str], optional): The subject of the email. Defaults to None.
-            to (Optional[List[str]], optional): The list of recipients. Defaults to None.
-            cc (Optional[List[str]], optional): The list of CC recipients. Defaults to None.
-            bcc (Optional[List[str]], optional): The list of BCC recipients. Defaults to None.
-            from_email (Optional[str], optional): The sender email address. Defaults to None.
+            context (dict[str, Any]): The context to render the template with.
+            subject (str | None, optional): The subject of the email. Defaults to None.
+            to (list[str] | None, optional): The list of recipients. Defaults to None.
+            cc (list[str] | None, optional): The list of CC recipients. Defaults to None.
+            bcc (list[str] | None, optional): The list of BCC recipients. Defaults to None.
+            from_email (str | None, optional): The sender email address. Defaults to None.
 
         Returns:
             Thread: The started thread in charge of sending the email.
@@ -95,7 +95,7 @@ class Email:
         return thread
 
     @staticmethod
-    def _render_template(template_path: str, context: Dict) -> str:
+    def _render_template(template_path: str, context: dict[str, Any]) -> str:
         """Renders a template with the given context."""
         template = loader.get_template(template_path)
         rendered = template.render(context)
